@@ -669,7 +669,7 @@ class Model(Container):
     """
 
     def compile(self, optimizer, loss, metrics=None, loss_weights=None,
-                sample_weight_mode=None, **kwargs):
+                sample_weight_mode=None, multinput=None, **kwargs):
         """Configures the model for training.
 
         # Arguments
@@ -704,6 +704,7 @@ class Model(Container):
             ValueError: In case of invalid arguments for
                 `optimizer`, `loss`, `metrics` or `sample_weight_mode`.
         """
+        self.multinput = multinput
         loss = loss or {}
         self.optimizer = optimizers.get(optimizer)
         self.sample_weight_mode = sample_weight_mode
@@ -1860,6 +1861,11 @@ class Model(Container):
                                          'a tuple `(x, y, sample_weight)` '
                                          'or `(x, y)`. Found: ' +
                                          str(generator_output))
+
+                    # ---- DEBUG ---- #
+                    if self.multinput is not None:
+                        x = [x, x]
+
                     # build batch logs
                     batch_logs = {}
                     if isinstance(x, list):
@@ -1993,6 +1999,10 @@ class Model(Container):
                                      '(x, y, sample_weight) '
                                      'or (x, y). Found: ' +
                                      str(generator_output))
+                # ---- DEBUG ---- #
+                if self.multinput is not None:
+                    x = [x, x]
+
                 outs = self.test_on_batch(x, y, sample_weight=sample_weight)
 
                 if isinstance(x, list):
