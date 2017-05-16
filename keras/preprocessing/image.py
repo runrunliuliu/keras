@@ -974,7 +974,7 @@ class DirectoryIterator(Iterator):
         # build batch of labels
         if self.class_mode == 'autoencode':
             batch_y = batch_x.copy() 
-        if self.class_mode == 'sparse':
+        elif self.class_mode == 'sparse':
             batch_y = self.classes[index_array]
         elif self.class_mode == 'binary':
             batch_y = self.classes[index_array].astype(K.floatx())
