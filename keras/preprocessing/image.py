@@ -881,7 +881,7 @@ class DirectoryIterator(Iterator):
             else:
                 self.image_shape = (1,) + self.target_size
         self.classes = classes
-        if class_mode not in {'categorical', 'binary', 'sparse', None}:
+        if class_mode not in {'categorical', 'binary', 'sparse', 'autoencode', None}:
             raise ValueError('Invalid class_mode:', class_mode,
                              '; expected one of "categorical", '
                              '"binary", "sparse", or None.')
@@ -972,6 +972,8 @@ class DirectoryIterator(Iterator):
                                                                   format=self.save_format)
                 img.save(os.path.join(self.save_to_dir, fname))
         # build batch of labels
+        if self.class_mode == 'autoencode':
+            batch_y = batch_x.copy() 
         if self.class_mode == 'sparse':
             batch_y = self.classes[index_array]
         elif self.class_mode == 'binary':
